@@ -211,6 +211,7 @@ dependencies = [
  "crossterm 0.26.1",
  "rusqlite",
  "tui",
+ "unicode-width",
 ]
 
 [[package]]
