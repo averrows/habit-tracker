@@ -5,12 +5,12 @@ use rusqlite::Connection;
 
 #[derive(Debug)]
 pub struct Habit {
-    name: String,
-    start: DateTime<Local>,
-    description: String,
-    duration: i32,
-    is_good: bool,
-    daily_status: Vec<bool>,
+    pub name: String,
+    pub start: DateTime<Local>,
+    pub description: String,
+    pub duration: i32,
+    pub is_good: bool,
+    pub daily_status: Vec<bool>,
 }
 
 fn parse_daily_status(s: String) -> Vec<bool> {

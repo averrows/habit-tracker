@@ -4,6 +4,7 @@ use std::{io::{self, Stdout}, thread, time::Duration, path::Path, fs::File, erro
 
 use crossterm::{terminal::{disable_raw_mode, LeaveAlternateScreen, Clear, ClearType, enable_raw_mode, EnterAlternateScreen}, execute, event::{DisableMouseCapture, Event, KeyEvent, KeyCode, self, EnableMouseCapture}};
 use pages::Pages;
+use rusqlite::Connection;
 use tui::{backend::{CrosstermBackend, Backend}, Terminal, widgets::{Block, Borders}, layout::{Layout, Constraint}, Frame};
 
 use crate::habit::Habit;
@@ -15,6 +16,7 @@ mod prelude {
 const FILENAME: &str = "habits.db";
 
 pub struct GlobalState {
+	conn: Connection,
 	input_state : InputState,
 	name: Option<String>,
 	current_page: Pages
@@ -29,7 +31,7 @@ pub enum InputState {
 
 impl Default for GlobalState {
 	fn default() -> GlobalState {
-		GlobalState { input_state: InputState::None, name: None, current_page: Pages::Login}
+		GlobalState { conn: rusqlite::Connection::open("habits.db").unwrap(), input_state: InputState::None, name: None, current_page: Pages::Login}
 	}
 }
 
@@ -60,17 +62,7 @@ pub fn read_input(state: &mut GlobalState, tag: &str) -> io::Result<()> {
 }
 fn main() -> Result<(), io::Error>{
 	generate_database_file();
-	let mut conn = rusqlite::Connection::open("habits.db").unwrap();
-	let habit = habit::Habit::new("Reading", "Read book 5 minutes", 10, true);
-	if habit.save(&mut conn).is_ok() {
-		println!("Habit saved");
-		let habits = Habit::get_all(&mut conn).unwrap();
-		println!("{:?}", habits);
-	} else {
-		println!("Habit not saved");
-	}
 	let mut stdout = io::stdout();
-
 	let mut terminal = initiate_terminal(&mut stdout)?;
 	let mut state = GlobalState::default();
 	loop {
