@@ -52,4 +52,6 @@
       - render habit page
     - when return
       - do the same but for welcome page
+  
+  we need to add mechanism to get the data from the page, we can inject it from the main, or place it in the global state
 
